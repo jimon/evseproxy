@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.5)
+project(evseproxy LANGUAGES C)
+add_executable(evseproxy main.c)
+if(WIN32)
+	target_link_libraries(evseproxy wsock32 ws2_32)
+endif()
