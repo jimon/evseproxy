@@ -7,7 +7,12 @@
 	#include <winsock2.h>
 	typedef SOCKET socket_t;
 #else
+	#include <sys/socket.h>
+	#include <netinet/in.h>
+	#include <arpa/inet.h>
+	#include <fcntl.h>
 	#include <signal.h>
+	#include <errno.h>
 	#include <unistd.h>
 	typedef int socket_t;
 #endif
@@ -90,6 +95,14 @@ static void ctrl_c_setup(void)
 
 #else
 
+#define INVALID_SOCKET -1
+#define SOCKET_ERROR -1
+
+static void wait_a_bit(int ms)
+{
+	usleep(ms * 1000);
+}
+
 static void sock_init(void)
 {
 }
@@ -107,7 +120,7 @@ static void sock_setnonblock(socket_t* s)
 
 static bool sock_wouldblock(void)
 {
-	return errno == EAGAIN || errno == EWOULDBLOCK;
+	return errno == EAGAIN || errno == EWOULDBLOCK || errno == EINPROGRESS;
 }
 
 static void sock_close(socket_t* s)
@@ -176,7 +189,7 @@ static void sock_ensure(socket_t* s, const char* ip, int port)
 	printf("trying to connect to %s:%i\n", ip, port);
 	fflush(stdout);
 
-	if(connect(*s, (SOCKADDR*)&addr, sizeof(addr)) == SOCKET_ERROR)
+	if(connect(*s, (struct sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
 	{
 		if(!sock_wouldblock())
 		{
