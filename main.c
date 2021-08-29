@@ -235,8 +235,8 @@ int main()
 
 		bool wait_for_connection = (knot1 == INVALID_SOCKET || knot2 == INVALID_SOCKET);
 
-		sock_ensure(&knot1, "192.168.1.249", 502);
-		sock_ensure(&knot2, "192.168.1.250", 502);
+		sock_ensure(&knot1, "192.168.1.36", 502);
+		sock_ensure(&knot2, "192.168.1.37", 502);
 
 		if (knot1 == INVALID_SOCKET || knot2 == INVALID_SOCKET)
 		{
@@ -281,7 +281,7 @@ int main()
 		bool response_ok = false;
 		bool timeout_response = false;
 
-		for(int i = 0, total_length = 0; i < 5; ++i)
+		for(int i = 0, total_length = 0; i < 10; ++i)
 		{
 			int length = recv(knot2, (char*)response + total_length, sizeof(response) - total_length, 0);
 			if (length == -1 || length == 0)
@@ -289,7 +289,7 @@ int main()
 				fd_set select_set = {0};
 				FD_ZERO(&select_set);
 				FD_SET(knot2, &select_set);
-				struct timeval select_time = {.tv_sec = 1, .tv_usec = 0};
+				struct timeval select_time = {.tv_sec = 0, .tv_usec = 500000};
 				select(0, &select_set, NULL, NULL, &select_time);
 				continue;
 			}
@@ -325,7 +325,7 @@ int main()
 
 		// ------------------------
 
-		if(timeout_response == false && send(knot1, response, sizeof(response), 0) != sizeof(response))
+		if(timeout_response == false && send(knot1, (const char*)response, sizeof(response), 0) != sizeof(response))
 		{
 			printf("failed to send modbus response to knot1\n");
 			fflush(stdout);
