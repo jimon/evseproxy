@@ -186,23 +186,23 @@ static void sock_ensure(socket_t* s, const char* ip, int port)
 	addr.sin_addr.s_addr = inet_addr(ip);
 	addr.sin_port = htons(port);
 
-	printf("trying to connect to %s:%i\n", ip, port);
-	fflush(stdout);
+	//printf("trying to connect to %s:%i\n", ip, port);
+	//fflush(stdout);
 
 	if(connect(*s, (struct sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR)
 	{
 		if(!sock_wouldblock())
 		{
-			printf("failed to connect socket\n");
-			fflush(stdout);
+			//printf("failed to connect socket\n");
+			//fflush(stdout);
 
 			sock_close(s);
 			return;
 		}
 	}
 
-	printf("connected to %s:%i\n", ip, port);
-	fflush(stdout);
+	//printf("connected to %s:%i\n", ip, port);
+	//fflush(stdout);
 
 	char buffer[1024];
 	int bytes = 0;
