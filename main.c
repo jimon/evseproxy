@@ -41,8 +41,8 @@ static void sock_init(void)
 	WSADATA wsa;
 	if(WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
-		printf("WSAStartup failed\n");
-		fflush(stdout);
+		//printf("WSAStartup failed\n");
+		//fflush(stdout);
 		exit(1);
 	}
 }
@@ -87,8 +87,8 @@ static void ctrl_c_setup(void)
 {
 	if(SetConsoleCtrlHandler(ctrl_c_handler, TRUE) == FALSE)
 	{
-		printf("SetConsoleCtrlHandler failed\n");
-		fflush(stdout);
+		//printf("SetConsoleCtrlHandler failed\n");
+		//fflush(stdout);
 		exit(1);
 	}
 }
@@ -174,8 +174,8 @@ static void sock_ensure(socket_t* s, const char* ip, int port)
 	*s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if(*s == INVALID_SOCKET)
 	{
-		printf("failed to create socket\n");
-		fflush(stdout);
+		//printf("failed to create socket\n");
+		//fflush(stdout);
 		return;
 	}
 
@@ -212,8 +212,8 @@ static void sock_ensure(socket_t* s, const char* ip, int port)
 
 	if (total_bytes > 0)
 	{
-		printf("flushed %i stale bytes in recv socket\n", total_bytes);
-		fflush(stdout);
+		//printf("flushed %i stale bytes in recv socket\n", total_bytes);
+		//fflush(stdout);
 	}
 }
 
@@ -269,8 +269,8 @@ int main()
 
 		if(send(knot2, (const char*)request, sizeof(request), 0) != sizeof(request))
 		{
-			printf("failed to send modbus request to knot2\n");
-			fflush(stdout);
+			//printf("failed to send modbus request to knot2\n");
+			//fflush(stdout);
 			sock_close(&knot2);
 			continue;
 		}
@@ -300,8 +300,8 @@ int main()
 			total_length += length;
 			if (total_length == 9 && response[7] == 0x84)
 			{
-				printf("knot2 timedout\n");
-				fflush(stdout);
+				//printf("knot2 timedout\n");
+				//fflush(stdout);
 
 				response_ok = true;
 				timeout_response = true;
@@ -317,8 +317,8 @@ int main()
 
 		if (!response_ok)
 		{
-			printf("failed to recv modbus response from knot2\n");
-			fflush(stdout);
+			//printf("failed to recv modbus response from knot2\n");
+			//fflush(stdout);
 			sock_close(&knot2);
 			continue;
 		}
@@ -327,8 +327,8 @@ int main()
 
 		if(timeout_response == false && send(knot1, (const char*)response, sizeof(response), 0) != sizeof(response))
 		{
-			printf("failed to send modbus response to knot1\n");
-			fflush(stdout);
+			//printf("failed to send modbus response to knot1\n");
+			//fflush(stdout);
 			sock_close(&knot1);
 			continue;
 		}
